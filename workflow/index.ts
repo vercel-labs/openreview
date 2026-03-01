@@ -1,18 +1,19 @@
 import { FatalError } from "workflow";
 
 import { parseError } from "@/lib/error";
-import { addPRComment } from "@/lib/steps/add-pr-comment";
-import { checkPushAccess } from "@/lib/steps/check-push-access";
-import { commitAndPush } from "@/lib/steps/commit-and-push";
-import { configureGit } from "@/lib/steps/configure-git";
-import { createSandbox } from "@/lib/steps/create-sandbox";
-import { extendSandbox } from "@/lib/steps/extend-sandbox";
-import { getDiff } from "@/lib/steps/get-diff";
-import { getGitHubToken } from "@/lib/steps/get-github-token";
-import { hasUncommittedChanges } from "@/lib/steps/has-uncommitted-changes";
-import { installDependencies } from "@/lib/steps/install-dependencies";
-import { runAgent } from "@/lib/steps/run-agent";
-import { stopSandbox } from "@/lib/steps/stop-sandbox";
+
+import { addPRComment } from "./steps/add-pr-comment";
+import { checkPushAccess } from "./steps/check-push-access";
+import { commitAndPush } from "./steps/commit-and-push";
+import { configureGit } from "./steps/configure-git";
+import { createSandbox } from "./steps/create-sandbox";
+import { extendSandbox } from "./steps/extend-sandbox";
+import { getDiff } from "./steps/get-diff";
+import { getGitHubToken } from "./steps/get-github-token";
+import { hasUncommittedChanges } from "./steps/has-uncommitted-changes";
+import { installDependencies } from "./steps/install-dependencies";
+import { runAgent } from "./steps/run-agent";
+import { stopSandbox } from "./steps/stop-sandbox";
 
 export interface WorkflowParams {
   baseBranch: string;
