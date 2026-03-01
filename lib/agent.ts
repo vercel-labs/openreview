@@ -1,4 +1,3 @@
-import { anthropic } from "@ai-sdk/anthropic";
 import type { Sandbox } from "@vercel/sandbox";
 import { ToolLoopAgent, stepCountIs, tool } from "ai";
 import { createBashTool } from "bash-tool";
@@ -60,7 +59,7 @@ export const createAgent = async (sandbox: Sandbox, threadId: string) => {
 
   return new ToolLoopAgent({
     instructions,
-    model: anthropic("claude-haiku-4-5"),
+    model: "anthropic/claude-sonnet-4.6",
     stopWhen: stepCountIs(20),
     tools: {
       ...bashTools,
