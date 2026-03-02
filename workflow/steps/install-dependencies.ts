@@ -48,12 +48,21 @@ export const installDependencies = async (sandboxId: string): Promise<void> => {
   }
 
   try {
-    // Install GitHub CLI via RPM (Amazon Linux 2023)
-    await sandbox.runCommand("bash", [
-      "-c",
-      // oxlint-disable-next-line no-template-curly-in-string
-      'GH_VERSION=$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest | grep -o \'"tag_name":"v[^"]*\' | cut -d"v" -f2) && sudo dnf install -y -q "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.rpm"',
+    // Install GitHub CLI (Amazon Linux 2023)
+    const ghInstall = await sandbox.runCommand("sudo", [
+      "dnf",
+      "install",
+      "-y",
+      "github-cli",
     ]);
+
+    if (ghInstall.exitCode !== 0) {
+      const stderr = await ghInstall.stderr();
+      const stdout = await ghInstall.stdout();
+      throw new Error(
+        `Failed to install GitHub CLI (exit ${ghInstall.exitCode}): ${stderr || stdout}`
+      );
+    }
 
     // Install project dependencies
     const { cmd, args } = await detectInstallCommand(sandbox);
