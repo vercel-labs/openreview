@@ -81,7 +81,7 @@ Based on the user's request, decide what to do. Your capabilities include:
 - Use \`bash\` with \`tailLines\` to see just the end of long command output (e.g. build errors)`;
 
 const MAX_STEPS = 20;
-const MAX_TOKENS = 200_0000;
+const MAX_TOKENS = 2_000_000;
 
 function getModel() {
   const provider = createOpenAI({
