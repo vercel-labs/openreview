@@ -42,6 +42,7 @@ const state = env.REDIS_URL
 let botInstance: Chat | null = null;
 
 const handleMention = async (thread: Thread, message: Message) => {
+  await thread.subscribe();
   await thread.adapter.addReaction(thread.id, message.id, emoji.eyes);
 
   const messages = await collectMessages(thread);
@@ -94,6 +95,15 @@ const initBot = async (): Promise<Chat> => {
 
   const appInfo = await getAppInfo();
 
+  // Match @openreview even when the app slug differs (e.g. my-openreview-bot).
+  // The Chat SDK's detectMention only checks @{slug}, so @openreview would be
+  // silently missed without this fallback pattern.
+  const aliases = new Set(["openreview", appInfo.slug]);
+  const aliasPattern = new RegExp(
+    [...aliases].map((a) => `@${a}\\b`).join("|"),
+    "i"
+  );
+
   botInstance = new Chat({
     adapters: {
       github: createGitHubAdapter({
@@ -113,10 +123,14 @@ const initBot = async (): Promise<Chat> => {
   botInstance.onNewMention(handleMention);
 
   botInstance.onSubscribedMessage(async (thread, message) => {
-    if (!message.isMention) {
+    if (!message.isMention && !aliasPattern.test(message.text)) {
       return;
     }
 
+    await handleMention(thread, message);
+  });
+
+  botInstance.onNewMessage(aliasPattern, async (thread, message) => {
     await handleMention(thread, message);
   });
 

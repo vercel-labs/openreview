@@ -8,7 +8,7 @@ An open-source, self-hosted AI code review bot. Deploy to Vercel, connect a GitH
 
 ## Features
 
-- **On-demand reviews** — Mention `@openreview` in any PR comment to trigger a review. Powered by [Chat SDK](https://chat-sdk.dev)
+- **On-demand reviews** — Mention `@openreview` or `@your-app-slug` in any PR comment to trigger a review. Powered by [Chat SDK](https://chat-sdk.dev)
 - **Sandboxed execution** — Runs in an isolated [Vercel Sandbox](https://vercel.com/docs/sandbox) with full repo access, including the ability to run linters, formatters, and tests
 - **Inline suggestions** — Posts line-level comments with GitHub suggestion blocks for one-click fixes
 - **Code changes** — Can directly fix formatting, lint errors, and simple bugs, then commit and push to your PR branch
@@ -57,12 +57,16 @@ sequenceDiagram
     WH->>WF: Start new workflow run
 ```
 
-1. Mention `@openreview` in a PR comment (optionally with specific instructions)
+1. Mention `@openreview` or `@your-app-slug` in a PR comment (optionally with specific instructions)
 2. OpenReview spins up a sandboxed environment and clones the repo on the PR branch
 3. A Claude-powered agent reviews the diff, explores the codebase, and runs project tooling
 4. The agent posts its findings as PR comments with inline suggestions
 5. If changes are made (formatting fixes, lint fixes, etc.), they're committed and pushed to the branch
 6. The sandbox is cleaned up
+
+## Prerequisites
+
+- A [Vercel account](https://vercel.com) with billing enabled — required for [Vercel AI Gateway](https://vercel.com/docs/ai-gateway), which routes review requests to Claude Sonnet 4.6
 
 ## Setup
 
@@ -96,7 +100,6 @@ Add the following environment variables to your Vercel project:
 
 | Variable                     | Description                                                            |
 | ---------------------------- | ---------------------------------------------------------------------- |
-| `ANTHROPIC_API_KEY`          | API key for Claude                                                     |
 | `GITHUB_APP_ID`              | The ID of your GitHub App                                              |
 | `GITHUB_APP_INSTALLATION_ID` | The installation ID for your repository                                |
 | `GITHUB_APP_PRIVATE_KEY`     | The private key generated for your GitHub App (with `\n` for newlines) |
@@ -105,11 +108,11 @@ Add the following environment variables to your Vercel project:
 
 ### 4. Install the GitHub App
 
-Install the GitHub App on the repositories you want OpenReview to monitor. Once installed, mention `@openreview` in any PR comment to trigger a review.
+Install the GitHub App on the repositories you want OpenReview to monitor. Once installed, mention `@openreview` or `@your-app-slug` in any PR comment to trigger a review.
 
 ## Usage
 
-**Trigger a review**: Comment `@openreview` on any PR. You can include specific instructions:
+**Trigger a review**: Comment `@openreview` or `@your-app-slug` on any PR. You can include specific instructions:
 
 ```
 @openreview check for security vulnerabilities
